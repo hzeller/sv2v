@@ -30,7 +30,7 @@ data Expr
     | Bit     Expr Expr
     | Repeat  Expr [Expr]
     | Concat  [Expr]
-    | Call    Identifier Args
+    | Call    Expr Args
     | UniOp   UniOp Expr
     | BinOp   BinOp Expr Expr
     | Mux     Expr Expr Expr
@@ -52,7 +52,7 @@ instance Show Expr where
     show (BinOp   o a b) = printf "(%s %s %s)" (show a) (show o) (show b)
     show (Dot     e n  ) = printf "%s.%s"      (show e) n
     show (Mux     c a b) = printf "(%s ? %s : %s)" (show c) (show a) (show b)
-    show (Call    f l  ) = printf "%s(%s)" f (show l)
+    show (Call    e l  ) = printf "%s(%s)" (show e) (show l)
     show (Cast tore e  ) = printf "%s'(%s)" (showEither tore) (show e)
     show (Bits tore    ) = printf "$bits(%s)" (showEither tore)
     show (Pattern l    ) =

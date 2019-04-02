@@ -42,10 +42,10 @@ collectTFDecls name decls =
 
 convertExpr :: TFs -> Expr -> Expr
 convertExpr _ (orig @ (Call _ (Args _ []))) = orig
-convertExpr tfs (Call func (Args pnArgs kwArgs)) =
+convertExpr tfs (Call (Ident func) (Args pnArgs kwArgs)) =
     case tfs Map.!? func of
-        Nothing -> Call func (Args pnArgs kwArgs)
-        Just ordered -> Call func (Args args [])
+        Nothing -> Call (Ident func) (Args pnArgs kwArgs)
+        Just ordered -> Call (Ident func) (Args args [])
             where
                 args = pnArgs ++ (map snd $ sortOn position kwArgs)
                 position (x, _) = elemIndex x ordered

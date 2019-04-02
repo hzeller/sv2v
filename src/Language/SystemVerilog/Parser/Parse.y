@@ -632,7 +632,7 @@ Stmts :: { [Stmt] }
 Stmt :: { Stmt }
   : StmtNonAsgn         { $1 }
   | LHS AsgnOp Expr ";" { AsgnBlk $2 $1 $3 }
-  | Identifier      ";" { Subroutine $1 (Args [] []) }
+  | Identifier      ";" { Subroutine (Ident $1) (Args [] []) }
   | LHS "<=" opt(DelayOrEventControl) Expr ";" { Asgn $3 $1 $4 }
   | LHS IncOrDecOperator ";" { AsgnBlk (AsgnOp $2) $1 (Number "1") }
   | IncOrDecOperator LHS ";" { AsgnBlk (AsgnOp $1) $2 (Number "1") }
@@ -645,7 +645,7 @@ StmtNonAsgn :: { Stmt }
   | Unique CaseKW "(" Expr ")" Cases opt(CaseDefault) "endcase" { Case $1 $2 $4 $6 $7 }
   | TimingControl Stmt                         { Timing $1 $2 }
   | "return" Expr ";"                          { Return $2 }
-  | Identifier "(" CallArgs ")" ";"            { Subroutine $1 $3 }
+  | Identifier "(" CallArgs ")" ";"            { Subroutine (Ident $1) $3 }
   | "while"  "(" Expr ")" Stmt                 { While   $3 $5 }
   | "repeat" "(" Expr ")" Stmt                 { RepeatL $3 $5 }
   | "do"      Stmt "while" "(" Expr ")" ";"    { DoWhile $5 $2 }
@@ -773,7 +773,7 @@ Expr :: { Expr }
   : "(" Expr ")"                { $2 }
   | String                      { String $1 }
   | Number                      { Number $1 }
-  | Identifier "(" CallArgs ")" { Call $1 $3 }
+  | Expr       "(" CallArgs ")" { Call $1 $3 }
   | "$bits"    "(" BitsArg  ")" { Bits $3 }
   | Identifier                  { Ident $1 }
   | Expr Range                  { Range $1 $2 }
